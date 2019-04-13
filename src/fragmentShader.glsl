@@ -7,16 +7,13 @@ const vec3 cPos = vec3(0.0, 0.0, -10.0);
 const vec3 cDir = vec3(0.0, 0.0, 1.0);
 const vec3 cUp = vec3(0.0, 1.0, 0.0);
 const float depth = 1.0;
-const vec3 lPos = vec3(0.0);
+const vec3 lPos = vec3(10.0,10.0,-10.0);
 
 float sphereDistFunc(vec3 p, float r) { 
   return length(p) - r; 
 }
 
-float distFunc(vec3 p) { 
-  p.y+=sin(iTime)*4.0;
-  p.x+=cos(iTime)*4.0;
-  p.z+=sin(iTime)*4.0;
+float distFunc(vec3 p) {   
   return sphereDistFunc(p, 1.0); 
 }
 
