@@ -3,15 +3,22 @@ uniform float iTime;
 uniform vec2 iResolution;
 #define PI 3.141592
 
-const vec3 cPos = vec3(0.0, 0.0, -5.0);
+const vec3 cPos = vec3(0.0, 0.0, -10.0);
 const vec3 cDir = vec3(0.0, 0.0, 1.0);
 const vec3 cUp = vec3(0.0, 1.0, 0.0);
 const float depth = 1.0;
-const vec3 lPos = vec3(10.0, 10.0, -10.0);
+const vec3 lPos = vec3(0.0);
 
-float sphereDistFunc(vec3 p, float r) { return length(p) - r; }
+float sphereDistFunc(vec3 p, float r) { 
+  return length(p) - r; 
+}
 
-float distFunc(vec3 p) { return sphereDistFunc(p, 1.0); }
+float distFunc(vec3 p) { 
+  p.y+=sin(iTime)*4.0;
+  p.x+=cos(iTime)*4.0;
+  p.z+=sin(iTime)*4.0;
+  return sphereDistFunc(p, 1.0); 
+}
 
 vec3 getNormal(vec3 p) {
   float d = 0.001;
@@ -22,7 +29,7 @@ vec3 getNormal(vec3 p) {
 }
 
 vec3 rayMarching(vec3 color, vec2 p) {
-  vec3 cSide = cross(cDir, cUp);
+  vec3 cSide = vec3(1.0,0.0,0.0);
   vec3 ray = normalize(cSide * p.x + cUp * p.y + cDir * depth);
   vec3 rPos = cPos;
   float rLen = 0.0;
@@ -30,11 +37,11 @@ vec3 rayMarching(vec3 color, vec2 p) {
   vec3 sphereColor = vec3(0.8, 0.2, 0.6);
   for (float i = 0.0; i < 60.0; i++) {
     float distance = distFunc(rPos);
-    if (abs(distance) < 0.01) {
+    if (abs(distance) < 0.01) {      
       vec3 normal = getNormal(rPos);
-      vec3 halfLE = normalize(lPos + rPos);
-      float specular = pow(clamp(dot(normal, halfLE), 0.0, 1.0), 50.0);
-      float diffuse = clamp(dot(normal, lPos), 0.0, 1.0) + 0.1;
+      vec3 lVec = normalize(lPos - rPos);      
+      float diffuse = clamp(dot(normal, lVec), 0.1, 1.0) + 0.1;
+      float specular = pow(clamp(dot(normal, lVec), 0.0, 1.0), 50.0);
       color = (sphereColor * diffuse + specular);
       break;
     }
